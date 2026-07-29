@@ -1,18 +1,24 @@
 from models.account import Account
+from repositories.AccountRepository import AccountRepository
+from repositories.UserRepository import UserRepository
 
 
 class AccountService:
-
-    ## Receive the AccountRepository instance from main.py, so AccountService can call its data access methods
-
-    def __init__(self, account_repository, user_repository):
-        self.account_repository = account_repository
-        self.user_repository = user_repository
+    def __init__(self, account_repository=None, user_repository=None):
+        """Use MongoDB repositories by default, or injected repositories in tests."""
+        self.account_repository = (
+            account_repository
+            if account_repository is not None
+            else AccountRepository()
+        )
+        self.user_repository = (
+            user_repository
+            if user_repository is not None
+            else UserRepository()
+        )
 
     def create_account(self, user_id, account_type):
-
         # Check if account type is valid
-
         if not isinstance(account_type, str):
             raise ValueError("Account type must be CHECKING or SAVINGS")
 
@@ -33,16 +39,13 @@ class AccountService:
         )
 
         if existing_account is not None:
-            raise ValueError(
-            f"User already has a {account_type} account"
-        )
+            raise ValueError(f"User already has a {account_type} account")
 
         account = Account(user_id, account_type)
         return self.account_repository.save(account)
-    
-    def get_account(self, account_id):
 
-        ## get account by id from repository
+    def get_account(self, account_id):
+        # Get an account by its ID from the repository.
 
         account = self.account_repository.get_by_id(account_id)
 
@@ -52,9 +55,5 @@ class AccountService:
         return account
 
     def get_all_accounts(self):
-
-        ## get all accounts from repository
-
+        # Return all accounts from the repository.
         return self.account_repository.get_all()
-
-    
