@@ -3,6 +3,7 @@ import os
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from mangum import Mangum
 from pydantic import BaseModel
 
 from repositories.AccountRepository import AccountRepository
@@ -163,3 +164,7 @@ def get_transactions(account_id: int, current_user=Depends(get_current_user)):
     except PermissionError as error:
         raise HTTPException(status_code=403, detail=str(error))
 
+
+# AWS Lambda entry point. Local development continues to use BankAPI:app,
+# while API Gateway invokes BankAPI.handler through Mangum.
+handler = Mangum(app)
