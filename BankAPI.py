@@ -13,6 +13,7 @@ from repositories.UserRepository import UserRepository
 from services.account_service import AccountService
 from services.auth_service import AuthenticationError, AuthService
 from services.transaction_service import TransactionService
+from magnum import Magnum
 
 
 app = FastAPI(title="Bank Application API")
