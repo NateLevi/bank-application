@@ -1,0 +1,13 @@
+.git
+.github
+.venv
+hello.venv
+__pycache__
+*.py[cod]
+*.env
+.jwt-secret
+.DS_Store
+frontend
+docs
+scripts
+tests
